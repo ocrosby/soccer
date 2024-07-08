@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the server",
-	Long:  `Starts the TDS College Conference Service server.`,
+	Long:  `Starts the TopDrawerSoccer College Conference Service server.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		env, _ := cmd.Flags().GetString("env")
 		initConfig(env)
