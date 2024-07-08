@@ -40,6 +40,34 @@ git push origin --tags
 
 Every time you publish new changes, run that again, updating the version number (0.1.0, 0.1.1, 0.1.2, etc.)
 
+## Project Structure
+
+In a monorepo setup for Go projects, whether to use a single go.mod at the root or individual go.mod files in each cmd service directory depends on the structure and dependencies of your projects. Here are considerations for both approaches:  
+Single go.mod at the Root
+
+Simplicity: A single go.mod file simplifies dependency management by having a unified set of dependencies for all projects within the monorepo.
+
+Consistency: Ensures all projects within the monorepo use the same versions of dependencies, which can help in avoiding compatibility issues.
+
+Tooling: Simplifies tooling and scripting around builds, tests, and dependency updates.
+Individual go.mod Files in Each cmd Service Directory
+
+Isolation: Allows each service to manage its dependencies independently, which is useful if the services are intended to be deployed or versioned separately.
+
+Flexibility: Services can upgrade their dependencies independently, reducing the risk of conflicts or forced updates across unrelated services.
+
+Microservice Architecture: Fits well with a microservice architecture where services are loosely coupled and may have different lifecycles and dependency requirements.
+
+### Decision Factors
+
+Project Size and Complexity: For smaller or tightly coupled projects, a single go.mod may be sufficient. For larger, more complex projects with loosely coupled services, individual go.mod files may offer better flexibility and isolation.
+
+Dependency Management: Consider whether you prefer centralized management of dependencies or if you need the flexibility to manage dependencies per service.
+
+Deployment and Versioning: If services are deployed and versioned independently, separate go.mod files might be more appropriate.
+
+Given the structure of your monorepo and the presence of a cmd directory that suggests potentially multiple services, if these services are intended to be independently deployable or have significantly different dependencies, it might be beneficial to have individual go.mod files for each service. This approach provides greater flexibility and isolation for dependency management, which can be advantageous in a microservices architecture.
+
 ## BDD Testing with Godog
 
 Install the latest version of the Godog CLI
