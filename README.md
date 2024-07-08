@@ -75,42 +75,7 @@ Given your monorepo structure and the details provided, the best approach for bu
 8. Versioning and Tagging Strategy: Implement a consistent versioning and tagging strategy for your Docker images. This could involve using semantic versioning, git commit hashes, or environment-specific tags to easily identify and rollback to specific image versions if necessary.
 
 
-Building a Docker image for a specific package
 
-```shell
-make build SERVICE=tds-college-conference ENV=dev
-```
-
-Notice that the "-service" part of the name is omitted.
-
-Since the Docker build context is at the root of the repository ...
-
-Checking the size of the Docker image
-
-```shell
-docker images tds-college-conference-service:latest
-```
-
-## Keeping Docker Clean
-
-```shell
-docker image prune -f
-docker container prune -f
-docker builder prune -f
-docker system prune -a -f
-```
-
-List all dangling images
-
-```shell
-docker images -f dangling=true -q
-```
-
-Delete all dangling images
-
-```shell
-docker images -f dangling=true -q | xargs docker rmi
-```
 
 
 Building the tds-college-conference-service image
@@ -127,6 +92,7 @@ make run SERVICE=tds-college-conference ENV=dev
 
 ## References
 
+- [Project Documentation](docs/index.md)
 - [How to use Godog for BDD development in Go](https://semaphoreci.com/community/tutorials/how-to-use-godog-for-behavior-driven-development-in-go)
 - [Example Go Monorepo](https://github.com/Medium-Stories/go-mono-repo)
 - [Go Project Structure Monorepo](https://blog.devops.dev/go-project-structure-monorepo-daa762ec36a2)

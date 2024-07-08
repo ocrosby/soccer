@@ -16,27 +16,6 @@ var rootCmd = &cobra.Command{
 	Long:  `A service for managing TDS College Conferences.`,
 }
 
-func serve() {
-	// Read the PORT variable using Viper
-	port := viper.GetString("PORT")
-	if port == "" {
-		log.Fatal("PORT must be set in .env or as an environment variable")
-	}
-
-	r := mux.NewRouter()
-
-	// Register the health check handler
-	r.HandleFunc("/health", HealthCheckHandler)
-
-	// Existing handlers
-	r.HandleFunc("/", HomeHandler)
-
-	err := http.ListenAndServe(":"+port, r)
-	if err != nil {
-		log.Fatalf("Failed to start server: %v", err)
-	}
-}
-
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the server",
@@ -44,7 +23,25 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		env, _ := cmd.Flags().GetString("env")
 		initConfig(env)
-		serve()
+
+		// Read the PORT variable using Viper
+		port := viper.GetString("PORT")
+		if port == "" {
+			log.Fatal("PORT must be set in .env or as an environment variable")
+		}
+
+		r := mux.NewRouter()
+
+		// Register the health check handler
+		r.HandleFunc("/health", HealthCheckHandler)
+
+		// Existing handlers
+		r.HandleFunc("/", HomeHandler)
+
+		err := http.ListenAndServe(":"+port, r)
+		if err != nil {
+			log.Fatalf("Failed to start server: %v", err)
+		}
 	},
 }
 
