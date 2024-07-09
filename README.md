@@ -120,6 +120,7 @@ make run SERVICE=tds-college-conference ENV=dev
 
 ## References
 
+- [Test Containers for Go](https://golang.testcontainers.org/)
 - [Project Documentation](docs/index.md)
 - [How to use Godog for BDD development in Go](https://semaphoreci.com/community/tutorials/how-to-use-godog-for-behavior-driven-development-in-go)
 - [Example Go Monorepo](https://github.com/Medium-Stories/go-mono-repo)
