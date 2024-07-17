@@ -1,6 +1,6 @@
 module github.com/ocrosby/soccer/cmd/tds-college-conference-service
 
-go 1.22.3
+go 1.22.5
 
 require (
 	github.com/cucumber/godog v0.14.1

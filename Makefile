@@ -36,6 +36,10 @@ push:
 	docker push $(IMAGE_NAME):$(TAG)
 
 
+# Generate swagger documentation
+swagger:
+	swagger generate spec -o ./cmd/user-service/swagger.yaml --scan-models ./internal/user-service ./cmd/user-service
+
 # Example usage: make build ENV=dev
 # This allows for dynamic building of images based on the current git commit and specified environment
 
