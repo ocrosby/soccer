@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func linkFromCell(element *colly.HTMLElement, index int) string {
+func LinkFromCell(element *colly.HTMLElement, index int) string {
 	var link string
 
 	prefix := "http://www.topdrawersoccer.com"
@@ -25,23 +25,23 @@ func linkFromCell(element *colly.HTMLElement, index int) string {
 	return link
 }
 
-func normalizeText(text string) string {
+func NormalizeText(text string) string {
 	text = strings.ReplaceAll(text, "\u00a0", " ")
 	text = strings.Trim(text, " ")
 
 	return text
 }
 
-func textFromCell(element *colly.HTMLElement, index int) string {
+func TextFromCell(element *colly.HTMLElement, index int) string {
 	goquerySelector := fmt.Sprintf("td:nth-child(%d)", index)
 
 	text := element.ChildText(goquerySelector)
-	text = normalizeText(text)
+	text = NormalizeText(text)
 
 	return text
 }
 
-func idFromUrl(url string) int {
+func IdentifierFromUrl(url string) int {
 	index := strings.LastIndex(url, "-")
 
 	if index < 0 {
@@ -58,7 +58,7 @@ func idFromUrl(url string) int {
 	return id
 }
 
-func genderFromUrl(url string) common.Gender {
+func GenderFromUrl(url string) common.Gender {
 	if strings.Contains(url, "/men/") {
 		return common.Male
 	} else if strings.Contains(url, "/women/") {

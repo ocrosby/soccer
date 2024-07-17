@@ -1,0 +1,7 @@
+paths:
+  - ./cmd/tds-club-player-service/features
+  - ./cmd/tds-coaching-change-service/features
+  - ./cmd/tds-college-conference-service/features
+  - ./cmd/tds-college-player-service/features
+  - ./cmd/tds-transfer-tracker-service/features
+  - ./cmd/user-service/features

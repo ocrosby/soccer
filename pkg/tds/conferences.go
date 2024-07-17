@@ -44,12 +44,12 @@ func conferencesFromUrl(url string, division common.Division) ([]Conference, err
 		h.ForEach("tr", func(_ int, el *colly.HTMLElement) {
 			conference := Conference{
 				Division: division,
-				Name:     textFromCell(el, 1),
-				Url:      linkFromCell(el, 1),
+				Name:     TextFromCell(el, 1),
+				Url:      LinkFromCell(el, 1),
 			}
 
-			conference.ID = idFromUrl(conference.Url)
-			conference.Gender = genderFromUrl(conference.Url)
+			conference.ID = IdentifierFromUrl(conference.Url)
+			conference.Gender = GenderFromUrl(conference.Url)
 
 			conferences = append(conferences, conference)
 		})

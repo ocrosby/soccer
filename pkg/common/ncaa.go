@@ -17,6 +17,7 @@ const (
 	NAIA
 	NJCAA
 	UnspecifiedDivision
+	TestDivision // TestDivision is used for testing purposes
 )
 
 func (d Division) String() string {
