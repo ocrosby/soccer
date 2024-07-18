@@ -66,7 +66,7 @@ Dependency Management: Consider whether you prefer centralized management of dep
 
 Deployment and Versioning: If services are deployed and versioned independently, separate go.mod files might be more appropriate.
 
-Given the structure of your monorepo and the presence of a cmd directory that suggests potentially multiple services, if these services are intended to be independently deployable or have significantly different dependencies, it might be beneficial to have individual go.mod files for each service. This approach provides greater flexibility and isolation for dependency management, which can be advantageous in a microservices architecture.
+it Given the structure of your monorepo and the presence of a cmd directory that suggests potentially multiple services, if these services are intended to be independently deployable or have significantly different dependencies, it might be beneficial to have individual go.mod files for each service. This approach provides greater flexibility and isolation for dependency management, which can be advantageous in a microservices architecture.
 
 ## BDD Testing with Godog
 
