@@ -128,3 +128,4 @@ make run SERVICE=tds-college-conference ENV=dev
 - [How to create and use a Go monorepo](https://scriptable.com/golang/how-to-create-and-use-a-go-monorepo/)
 - [Getting started with multi-module workspaces in Go](https://go.dev/doc/tutorial/workspaces/)
 - [Get familiar with workspaces](https://go.dev/blog/get-familiar-with-workspaces)
+- [How I write HTTP services in Go](https://grafana.com/blog/2024/02/09/how-i-write-http-services-in-go-after-13-years/)

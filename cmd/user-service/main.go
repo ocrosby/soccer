@@ -1,14 +1,52 @@
 package main
 
 import (
-	"github.com/ocrosby/soccer/internal"
+	"context"
+	"fmt"
+	"github.com/ocrosby/soccer/internal/user-service"
+	"io"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
 )
 
-func main() {
-	server := internal.NewAPIServer(":8080")
+func getEnv(variableName string) string {
+	value, exists := os.LookupEnv(variableName)
+	if !exists {
+		// Return an empty string or a default value if the environment variable is not set
+		return ""
+	}
 
-	if err := server.Run(); err != nil {
-		log.Fatalf("Error starting server: %v", err)
+	return value
+}
+
+func run(ctx context.Context, args []string, getenv func(string) string, stdin io.Reader, stdout, stderr io.Writer) error {
+
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
+	// ...
+
+	app := user_service.NewApplication(":8080")
+	router := user_service.SetupRoutes(app)
+
+	server := http.Server{
+		Addr:    app.Address,
+		Handler: router,
+	}
+
+	log.Printf("Starting server on %s", app.Address)
+	return server.ListenAndServe()
+}
+
+func main() {
+	ctx := context.Background()
+	if err := run(ctx, os.Args, getEnv, os.Stdin, os.Stdout, os.Stderr); err != nil {
+		if _, err = fmt.Fprintf(os.Stderr, "%v\n", err); err != nil {
+			os.Exit(2)
+		}
+
+		os.Exit(1)
 	}
 }
