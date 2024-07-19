@@ -6,7 +6,6 @@ from diagrams.aws.compute import ECS  # Assuming location-service runs on ECS fo
 
 with Diagram("Location Service Architecture", show=False, direction='TB', filename="../cmd/location-service/assets/location_service_architecture"):
     with Cluster("EKS Cluster"):
-#         eks = EKS("EKS Cluster")
         redis = ElastiCache("Redis Cache")
         postgres = RDS("PostgreSQL DB")
         location_service = ECS("Location Service")
