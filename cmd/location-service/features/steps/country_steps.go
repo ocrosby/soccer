@@ -2,9 +2,9 @@ package steps
 
 import (
 	"context"
-	"fmt"
 	"github.com/cucumber/godog"
 	"github.com/docker/go-connections/nat"
+	"github.com/ocrosby/soccer/internal/database"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 	"log"
@@ -88,9 +88,9 @@ func startPostgresContainer() (nat.Port, error) {
 	return port, nil
 }
 
-func startLocationServiceContainer(dbPort nat.Port) (nat.Port, error) {
+func startLocationServiceContainer(settings database.Settings) (nat.Port, error) {
 	// Construct the database connection string
-	dbConnectionString := fmt.Sprintf("host=postgres port=%s user=user password=password dbname=testdb sslmode=disable", dbPort.Port())
+	dbConnectionString := settings.ConnectionString()
 
 	req := testcontainers.ContainerRequest{
 		FromDockerfile: testcontainers.FromDockerfile{
@@ -136,11 +136,12 @@ func InitializeCountriesTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
 		var err error
 
+		settings := database.NewSettings("postgres", dbPort.Port(), "user", "password", "testdb", "disable")
 		dbPort, err = startPostgresContainer()
 		handleError(err, "Failed to start PostgreSQL container")
 		logContainerDetails(dbPort, "PostgreSQL")
 
-		locationPort, err = startLocationServiceContainer(dbPort)
+		locationPort, err = startLocationServiceContainer(*settings)
 		handleError(err, "Failed to start Location Service container")
 		logContainerDetails(locationPort, "Location Service")
 
