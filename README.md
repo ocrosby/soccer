@@ -118,6 +118,20 @@ Running the tds-college-conference-service container
 make run SERVICE=tds-college-conference ENV=dev
 ```
 
+## Running Tests
+
+To run the integration tests for location-service
+
+```shell
+go test -tags=godog ./cmd/location-service/features
+```
+
+Building the location service image
+
+```shell
+docker build -f cmd/location-service/Dockerfile -t location-service:latest .
+```
+
 ## References
 
 - [Test Containers for Go](https://golang.testcontainers.org/)
@@ -129,3 +143,4 @@ make run SERVICE=tds-college-conference ENV=dev
 - [Getting started with multi-module workspaces in Go](https://go.dev/doc/tutorial/workspaces/)
 - [Get familiar with workspaces](https://go.dev/blog/get-familiar-with-workspaces)
 - [How I write HTTP services in Go](https://grafana.com/blog/2024/02/09/how-i-write-http-services-in-go-after-13-years/)
+- [Local Development of Go Applications with Testcontainers](https://www.docker.com/blog/local-development-of-go-applications-with-testcontainers/)

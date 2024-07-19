@@ -4,6 +4,11 @@ This microservice will be utilized to manage the location data for several appli
 stored in a PostgreSQL database.
 
 
+To run the integration tests for location-service, from the root directory execute the following
+
+```shell
+go test -tags=godog ./cmd/location-service/features
+```
 
 
 ## References
