@@ -11,10 +11,10 @@ func SetupRoutes(app *Application) *http.ServeMux {
 	countriesHandler := httpHandlers.NewCountryHandler()
 
 	router.HandleFunc("GET /countries", countriesHandler.Read)
-	router.HandleFunc("GET /countries/{countryID}", countriesHandler.Read)
+	router.HandleFunc("GET /countries/{id}", countriesHandler.Read)
 	router.HandleFunc("POST /countries", countriesHandler.Create)
-	router.HandleFunc("PUT /countries/{countryID}", countriesHandler.Update)
-	router.HandleFunc("DELETE /countries/{countryID}", countriesHandler.Delete)
+	router.HandleFunc("PUT /countries/{id}", countriesHandler.Update)
+	router.HandleFunc("DELETE /countries/{id}", countriesHandler.Delete)
 
 	return router
 }

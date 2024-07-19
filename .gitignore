@@ -24,3 +24,5 @@ go.work.sum
 .idea
 
 .devcontainer/.env
+
+diagrams/venv
