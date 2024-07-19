@@ -1,5 +1,23 @@
 # User Service
 
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Client as Client
+    participant AuthServer as Authorization Server
+    participant ResourceServer as Resource Server
+
+    User->>Client: Request access
+    Client->>AuthServer: Redirect to Auth Server with Client ID & Redirect URI
+    AuthServer->>User: Authenticate & request consent
+    User->>AuthServer: Consent
+    AuthServer->>Client: Redirect with Authorization Code
+    Client->>AuthServer: Request Access Token with Authorization Code & Client Secret
+    AuthServer->>Client: Access Token (and Refresh Token)
+    Client->>ResourceServer: Request Resource with Access Token
+    ResourceServer->>Client: Serve Resource
+```
+
 ## References
 
 * [An Introduction to OAuth2](https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2)
