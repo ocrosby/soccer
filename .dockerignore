@@ -1,0 +1,46 @@
+#\# Ignore all files and directories by default
+#**
+#
+#\# Allow files and directories required for the build
+#\!cmd/location-service/**
+#\!internal/**
+#\!pkg/**
+#\!go.mod
+#\!go.sum
+#
+#\# Exclude unnecessary files and directories even within the included paths
+#\*.git
+#\*.test
+#\*.md
+#test/
+#features/
+#assets/
+
+.git
+.idea
+*.md
+
+# Ignore Go test files
+*_test.go
+
+# Ignore all images
+*.png
+
+# Ignore Dockerfiles
+Dockerfile*
+
+# Ignore features directories
+**/features/
+
+# Ignore assets directories
+**/assets/
+
+docs/
+deploy/
+scripts/
+diagrams/
+
+.gitignore
+.dockerignore
+docker-compose.yml
+godog.yml

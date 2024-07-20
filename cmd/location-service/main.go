@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	service "github.com/ocrosby/soccer/internal/location-service"
 	"io"
@@ -26,9 +27,24 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdin i
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 
-	// ...
+	dbConnectionString := getenv("DB_CONNECTION_STRING")
+	db, err := sql.Open("postgres", dbConnectionString)
+	if err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Failed to close database connection: %v", err)
+		}
+	}(db)
 
-	app := service.NewApplication(":8080")
+	// Ensure the database is reachable
+	if err = db.PingContext(ctx); err != nil {
+		log.Fatalf("Could not ping the database: %v", err)
+	}
+	
+	app := service.NewApplication(":8080", db)
 	router := service.SetupRoutes(app)
 
 	server := http.Server{

@@ -1,3 +1,4 @@
+// internal/database/models/country.go
 package models
 
 type Country struct {

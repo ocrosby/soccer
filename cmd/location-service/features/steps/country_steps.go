@@ -2,12 +2,21 @@ package steps
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"sort"
+	"time"
+
 	"github.com/cucumber/godog"
 	"github.com/docker/go-connections/nat"
 	"github.com/ocrosby/soccer/internal/database"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
-	"log"
+
+	_ "github.com/lib/pq"
 )
 
 var dbContainer testcontainers.Container
@@ -59,7 +68,55 @@ func theNameOfTheCountryWithCodeShouldBeUpdatedToInTheDatabase(arg1, arg2 string
 	return godog.ErrPending
 }
 
-func startPostgresContainer() (nat.Port, error) {
+func executeDBScripts(db *sql.DB, scriptsDir string) error {
+	var (
+		files   []os.DirEntry
+		content []byte
+		err     error
+	)
+
+	if files, err = os.ReadDir(scriptsDir); err != nil {
+		// Log the current directory at this point.
+		// This will help you determine the location where the script is being executed.
+		// You can use this information to debug the issue.
+		dir, _ := os.Getwd()
+		log.Printf("Current directory: %s", dir)
+		return fmt.Errorf("reading scripts directory: %w", err)
+	}
+
+	// Sort files by name to ensure execution order
+	// This is important if the scripts depend on each other
+	// For example, creating tables before inserting data
+	// You can also use a naming convention to ensure the correct order
+	// For example, 01_create_table.sql, 02_insert_data.sql
+	// This will ensure that the scripts are executed in the correct order
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].Name() < files[j].Name()
+	})
+
+	for _, file := range files {
+		// Skip files that are not SQL scripts
+		if filepath.Ext(file.Name()) != ".sql" {
+			continue
+		}
+
+		// Read the content of the SQL script
+		if content, err = os.ReadFile(filepath.Join(scriptsDir, file.Name())); err != nil {
+			return fmt.Errorf("reading file %s: %w", file.Name(), err)
+		}
+
+		// Execute the SQL script
+		if _, err = db.Exec(string(content)); err != nil {
+			return fmt.Errorf("executing script %s: %w", file.Name(), err)
+		}
+
+		log.Printf("Successfully executed script: %s", file.Name())
+	}
+
+	return nil
+}
+
+func startPostgresContainer() (testcontainers.Container, nat.Port, error) {
 	req := testcontainers.ContainerRequest{
 		Image:        "postgres:latest",
 		ExposedPorts: []string{"5432/tcp"},
@@ -77,28 +134,48 @@ func startPostgresContainer() (nat.Port, error) {
 	})
 
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 
 	port, err := container.MappedPort(context.Background(), "5432")
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 
-	return port, nil
+	// After the container is started and ready
+	// Connect to the database and execute the SQL scripts
+	db, err := sql.Open("postgres", fmt.Sprintf("host=localhost port=%s user=user password=password dbname=testdb sslmode=disable", port.Port()))
+	if err != nil {
+		return nil, "", fmt.Errorf("connecting to postgres: %w", err)
+	}
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			log.Printf("Failed to close database connection: %v", err)
+		}
+	}(db)
+
+	// Assuming your scripts are in "./scripts"
+	if err = executeDBScripts(db, "./scripts"); err != nil {
+		return nil, "", fmt.Errorf("executing database scripts: %w", err)
+	}
+
+	return container, port, nil
 }
 
-func startLocationServiceContainer(settings database.Settings) (nat.Port, error) {
+func startLocationServiceContainer(settings database.Settings) (testcontainers.Container, nat.Port, error) {
 	// Construct the database connection string
 	dbConnectionString := settings.ConnectionString()
 
+	// https://golang.testcontainers.org/features/build_from_dockerfile/
 	req := testcontainers.ContainerRequest{
 		FromDockerfile: testcontainers.FromDockerfile{
-			Context:    "./../",
-			Dockerfile: "./Dockerfile",
+			Context:       "./../../../",
+			Dockerfile:    "./cmd/location-service/Dockerfile",
+			PrintBuildLog: true,
 		},
 		ExposedPorts: []string{"8080/tcp"},
-		WaitingFor:   wait.ForListeningPort("8080/tcp"),
+		WaitingFor:   wait.ForListeningPort("8080/tcp").WithStartupTimeout(10 * time.Second),
 		Env: map[string]string{
 			"DB_CONNECTION_STRING": dbConnectionString,
 		},
@@ -110,15 +187,15 @@ func startLocationServiceContainer(settings database.Settings) (nat.Port, error)
 	})
 
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 
 	port, err := container.MappedPort(context.Background(), "8080")
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 
-	return port, nil
+	return container, port, nil
 }
 
 func handleError(err error, message string) {
@@ -137,11 +214,11 @@ func InitializeCountriesTestSuite(ctx *godog.TestSuiteContext) {
 		var err error
 
 		settings := database.NewSettings("postgres", dbPort.Port(), "user", "password", "testdb", "disable")
-		dbPort, err = startPostgresContainer()
+		dbContainer, dbPort, err = startPostgresContainer()
 		handleError(err, "Failed to start PostgreSQL container")
 		logContainerDetails(dbPort, "PostgreSQL")
 
-		locationPort, err = startLocationServiceContainer(*settings)
+		locationServiceContainer, locationPort, err = startLocationServiceContainer(*settings)
 		handleError(err, "Failed to start Location Service container")
 		logContainerDetails(locationPort, "Location Service")
 

@@ -1,6 +1,7 @@
 package location_service
 
 import (
+	"github.com/ocrosby/soccer/internal/location-service/database/repository"
 	httpHandlers "github.com/ocrosby/soccer/internal/location-service/handlers"
 	"net/http"
 )
@@ -8,7 +9,8 @@ import (
 func SetupRoutes(app *Application) *http.ServeMux {
 	router := http.NewServeMux()
 
-	countriesHandler := httpHandlers.NewCountryHandler()
+	repo := repository.NewCountryRepository(app.DB)
+	countriesHandler := httpHandlers.NewCountryHandler(repo)
 
 	router.HandleFunc("GET /countries", countriesHandler.Read)
 	router.HandleFunc("GET /countries/{id}", countriesHandler.Read)

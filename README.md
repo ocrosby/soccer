@@ -132,6 +132,14 @@ Building the location service image
 docker build -f cmd/location-service/Dockerfile -t location-service:latest .
 ```
 
+## Dealing with Docker
+
+Cleaning up dangling images
+
+```shell
+docker image prune
+```
+
 ## References
 
 - [Test Containers for Go](https://golang.testcontainers.org/)
