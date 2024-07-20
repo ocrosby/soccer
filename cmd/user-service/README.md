@@ -18,6 +18,44 @@ sequenceDiagram
     ResourceServer->>Client: Serve Resource
 ```
 
+## Registration
+
+```mermaid
+sequenceDiagram
+participant User as User
+participant Client as Client
+participant Server as Server
+
+    User->>Client: Fill out registration form
+    Client->>Server: Send registration details
+    Server->>Server: Validate details & create account
+    Server->>User: Send confirmation email with token
+    User->>Client: Click confirmation link
+    Client->>Server: Send confirmation token
+    Server->>Server: Validate token & activate account
+    Server->>Client: Confirm account activation
+    Client->>User: Display success message
+```
+
+## Authentication
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Client as Client
+    participant AuthServer as Authentication Server
+
+    User->>Client: Enter credentials
+    Client->>AuthServer: Send credentials
+    alt credentials valid
+        AuthServer->>Client: Access Token (and Refresh Token)
+        Client->>User: Grant access
+    else credentials invalid
+        AuthServer->>Client: Error message
+        Client->>User: Show error
+    end
+```
+
 ## References
 
 * [An Introduction to OAuth2](https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2)
