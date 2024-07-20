@@ -1,5 +1,7 @@
 # User Service
 
+## OAuth 2
+
 ```mermaid
 sequenceDiagram
     participant User as User
