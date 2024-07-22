@@ -9,11 +9,16 @@ import (
 
 var ErrInvalidGender = errors.New("invalid gender")
 
+// Gender represents the gender of an individual or group.
+// swagger:enum
 type Gender int
 
 const (
+	// Male represents the male gender.
 	Male Gender = iota
+	// Female represents the female gender.
 	Female
+	// UnspecifiedGender represents an unspecified gender.
 	UnspecifiedGender
 )
 

@@ -1,0 +1,130 @@
+basePath: /
+consumes:
+    - application/json
+definitions:
+    Change:
+        properties:
+            departing_coach:
+                type: string
+                x-go-name: DepartingCoach
+            departing_coach_url:
+                type: string
+                x-go-name: DepartingCoachUrl
+            new_coach:
+                type: string
+                x-go-name: NewCoach
+            new_coach_url:
+                type: string
+                x-go-name: NewCoachUrl
+            program_gender:
+                $ref: '#/definitions/Gender'
+            program_id:
+                format: int64
+                type: integer
+                x-go-name: ProgramId
+            program_name:
+                type: string
+                x-go-name: Program
+            program_url:
+                type: string
+                x-go-name: ProgramUrl
+        title: Change represents a coaching change within a program.
+        type: object
+        x-go-package: github.com/ocrosby/soccer/internal/tds-coaching-change-service/models
+    Gender:
+        format: int64
+        title: Gender represents the gender of an individual or group.
+        type: integer
+        x-go-package: github.com/ocrosby/soccer/pkg/common
+host: localhost
+info:
+    description: This service provides a RESTful API for accessing Division I coaching changes from TopDrawerSoccer.com.
+    title: tds-coaching-change-service
+    version: 1.0.0
+paths:
+    /changes:
+        get:
+            description: Optional query parameter "gender" can be used to filter the results by gender.
+            operationId: listChanges
+            parameters:
+                - in: query
+                  name: gender
+                  type: string
+                  x-go-name: Gender
+            responses:
+                "200":
+                    $ref: '#/responses/changesResponse'
+                "400":
+                    $ref: '#/responses/badRequestResponse'
+            summary: Retrieves coaching changes.
+            tags:
+                - changes
+    /health:
+        get:
+            operationId: healthCheck
+            responses:
+                "200":
+                    $ref: '#/responses/HealthResponse'
+                "503":
+                    $ref: '#/responses/HealthResponse'
+            summary: HealthCheckHandler checks if the service is healthy.
+            tags:
+                - Kubernetes
+    /readiness:
+        get:
+            operationId: readinessCheck
+            responses:
+                "200":
+                    $ref: '#/responses/ReadinessResponse'
+                "503":
+                    $ref: '#/responses/ReadinessResponse'
+            summary: ReadinessCheckHandler checks if the service is ready to serve traffic.
+            tags:
+                - Kubernetes
+    /startup:
+        get:
+            operationId: startupCheck
+            responses:
+                "200":
+                    $ref: '#/responses/StartupResponse'
+                "503":
+                    $ref: '#/responses/StartupResponse'
+            summary: StartupCheckHandler checks if the service has completed its startup procedures.
+            tags:
+                - Kubernetes
+produces:
+    - application/json
+responses:
+    HealthResponse:
+        description: HealthResponse represents the response for a health check.
+        headers:
+            status:
+                type: string
+    ReadinessResponse:
+        description: ReadinessResponse represents the response for a readiness check.
+        headers:
+            status:
+                type: string
+    StartupResponse:
+        description: StartupResponse represents the response for a startup check.
+        headers:
+            status:
+                type: string
+    badRequestResponse:
+        description: ""
+        schema:
+            properties:
+                error:
+                    type: string
+                    x-go-name: Error
+            type: object
+    changesResponse:
+        description: ""
+        schema:
+            items:
+                $ref: '#/definitions/Change'
+            type: array
+schemes:
+    - http
+    - https
+swagger: "2.0"

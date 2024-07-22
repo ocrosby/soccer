@@ -6,7 +6,7 @@ I will be utilizing [go-swagger](https://github.com/go-swagger/go-swagger) in th
 ## Installation
 
 ```bash
-go install github.com/go-swagger/go-swagger/cmd/swagger@latest
+go install github.com/go-swagger/go-swagger/services/swagger@latest
 ```
 
 Note: Make sure you have `$GOPATH/bin` in your `$PATH`.

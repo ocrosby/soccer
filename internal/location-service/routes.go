@@ -11,6 +11,11 @@ func SetupRoutes(app *Application) *http.ServeMux {
 
 	repo := repository.NewCountryRepository(app.DB)
 	countriesHandler := httpHandlers.NewCountryHandler(repo)
+	kubernetesHandler := httpHandlers.NewKubernetesHandler(app.DB)
+
+	router.HandleFunc("GET /healthz", kubernetesHandler.HealthCheckHandler)
+	router.HandleFunc("GET /ready", kubernetesHandler.ReadinessCheckHandler)
+	router.HandleFunc("GET /start", kubernetesHandler.StartupCheckHandler)
 
 	router.HandleFunc("GET /countries", countriesHandler.Read)
 	router.HandleFunc("GET /countries/{id}", countriesHandler.Read)

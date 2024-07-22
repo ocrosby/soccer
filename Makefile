@@ -35,10 +35,18 @@ run:
 push:
 	docker push $(IMAGE_NAME):$(TAG)
 
+docker:
+	docker build -t tds-coaching-change-service:latest -f services/tds-coaching-change-service/Dockerfile .
+
+spin:
+	docker run -d -p 8080:8080 --name tds-coaching-change-service-container tds-coaching-change-service:latest
+
+swagger:
+	docker run -d -p 8080:8080 --name tds-coaching-change-service-container tds-coaching-change-service:latest
 
 # Generate swagger documentation
 swagger:
-	swagger generate spec -o ./cmd/user-service/swagger.yaml --scan-models ./internal/user-service ./cmd/user-service
+	swagger generate spec -o ./services/tds-coaching-change-service/swagger.yaml --scan-models ./internal/tds-coaching-change-service ./services/tds-coaching-change-service
 
 # Example usage: make build ENV=dev
 # This allows for dynamic building of images based on the current git commit and specified environment

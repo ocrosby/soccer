@@ -73,7 +73,7 @@ it Given the structure of your monorepo and the presence of a cmd directory that
 Install the latest version of the Godog CLI
 
 ```shell
-go install github.com/cucumber/godog/cmd/godog@latest
+go install github.com/cucumber/godog/services/godog@latest
 ```
 
 Run the tests
@@ -123,13 +123,13 @@ make run SERVICE=tds-college-conference ENV=dev
 To run the integration tests for location-service
 
 ```shell
-go test -tags=godog ./cmd/location-service/features
+go test -tags=godog ./services/location-service/features
 ```
 
 Building the location service image
 
 ```shell
-docker build -f cmd/location-service/Dockerfile -t location-service:latest .
+docker build -f services/location-service/Dockerfile -t location-service:latest .
 ```
 
 ## Dealing with Docker
@@ -153,3 +153,4 @@ docker image prune
 - [How I write HTTP services in Go](https://grafana.com/blog/2024/02/09/how-i-write-http-services-in-go-after-13-years/)
 - [Local Development of Go Applications with Testcontainers](https://www.docker.com/blog/local-development-of-go-applications-with-testcontainers/)
 - [Logging HTTP Requests in Go](https://blog.kowalczyk.info/article/e00e89c3841e4f8c8c769a78b8a90b47/logging-http-requests-in-go.html)
+- [Swagger UI](https://github.com/swagger-api/swagger-ui/releases/)

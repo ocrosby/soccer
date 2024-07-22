@@ -1,7 +1,7 @@
 package main
 
 // detect_changed_services.go is a utility script designed for use in a CI/CD pipeline within a Go monorepo structure.
-// Its primary function is to identify which services under the `cmd` directory have changed by comparing the current
+// Its primary function is to identify which services under the `services` directory have changed by comparing the current
 // branch with the main branch. This allows for optimized CI/CD processes by ensuring that only the services affected
 // by recent changes are built and tested. This script utilizes git commands to fetch the latest changes, determine the
 // merge base, and list changed files, ultimately extracting and deduplicating service names to identify the changed
@@ -28,7 +28,7 @@ func getMergeBase() (string, error) {
 }
 
 func getChangedServices(mergeBase string) ([]string, error) {
-	cmd := exec.Command("git", "diff", "--name-only", "FETCH_HEAD", mergeBase, "--", "cmd/*")
+	cmd := exec.Command("git", "diff", "--name-only", "FETCH_HEAD", mergeBase, "--", "services/*")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
